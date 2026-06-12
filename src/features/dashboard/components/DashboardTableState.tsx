@@ -21,7 +21,13 @@ export function DashboardTableState({ colSpan, isLoading, isError }: DashboardTa
   )
 }
 
-export function EmptyTableBody({ colSpan, message = 'No data found.' }: { colSpan: number; message?: string }) {
+export function EmptyTableBody({
+  colSpan,
+  message = 'No data found.',
+}: {
+  colSpan: number
+  message?: string
+}) {
   return (
     <TableBody>
       <TableRow>

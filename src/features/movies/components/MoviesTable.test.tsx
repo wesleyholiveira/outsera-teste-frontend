@@ -5,40 +5,35 @@ import { MoviesTable } from './MoviesTable'
 import { renderWithQueryClient } from '../../../test/renderWithQueryClient'
 import { getMovies } from '../services/moviesService'
 
-vi.mock('@mui/x-data-grid', async () => {
-  const actual = await vi.importActual<typeof import('@mui/x-data-grid')>('@mui/x-data-grid')
-
-  return {
-    ...actual,
-    DataGrid: ({
-      rows,
-      columns,
-    }: {
-      rows: Array<{ id: number; title: string }>
-      columns: Array<{
-        field: string
-        headerName?: string
-        renderHeader?: () => React.ReactNode
-      }>
-    }) => (
-      <div data-testid="data-grid">
-        <div data-testid="data-grid-headers">
-          {columns.map((column) => (
-            <div key={column.field}>
-              {column.renderHeader ? column.renderHeader() : column.headerName}
-            </div>
-          ))}
-        </div>
-
-        <div data-testid="data-grid-rows">
-          {rows.map((row) => (
-            <div key={row.id}>{row.title}</div>
-          ))}
-        </div>
+vi.mock('@mui/x-data-grid', () => ({
+  DataGrid: ({
+    rows,
+    columns,
+  }: {
+    rows: Array<{ id: number; title: string }>
+    columns: Array<{
+      field: string
+      headerName?: string
+      renderHeader?: () => React.ReactNode
+    }>
+  }) => (
+    <div data-testid="data-grid">
+      <div data-testid="data-grid-headers">
+        {columns.map((column) => (
+          <div key={column.field}>
+            {column.renderHeader ? column.renderHeader() : column.headerName}
+          </div>
+        ))}
       </div>
-    ),
-  }
-})
+
+      <div data-testid="data-grid-rows">
+        {rows.map((row) => (
+          <div key={row.id}>{row.title}</div>
+        ))}
+      </div>
+    </div>
+  ),
+}))
 
 vi.mock('../services/moviesService', () => ({
   getMovies: vi.fn(),
