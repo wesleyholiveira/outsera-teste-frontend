@@ -1,3 +1,4 @@
+import { getJson } from '../../../services/apiClient'
 import type { MoviesResponse } from '../types/movie'
 
 const BASE_URL = 'https://challenge.outsera.tech/api/movies'
@@ -28,11 +29,5 @@ export async function getMovies({
     params.set('winner', String(winner))
   }
 
-  const response = await fetch(`${BASE_URL}?${params.toString()}`)
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch movies')
-  }
-
-  return response.json()
+  return getJson(`${BASE_URL}?${params.toString()}`, 'Failed to fetch movies')
 }

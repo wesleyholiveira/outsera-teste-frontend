@@ -1,13 +1,19 @@
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
-import type { MultipleWinnerYear } from '../types/dashboard'
+import { useYearsWithMultipleWinners } from '../hooks/useDashboardQueries'
 import { dashboardCardStyles } from './DashboardCard.styles'
+import { DashboardTableState, EmptyTableBody } from './DashboardTableState'
+import { useMemo } from 'react'
 
-type Props = {
-  data: MultipleWinnerYear[]
-}
+export function MultipleWinnersCard() {
+  const { data, isLoading, isFetching, isError } = useYearsWithMultipleWinners()
+  const isPending = isLoading || isFetching
 
-export function MultipleWinnersCard({ data }: Props) {
+  const localYears = useMemo(
+    () => [...(data?.years ?? [])].sort((a, b) => b.year - a.year),
+    [data?.years],
+  )
+
   return (
     <Paper sx={dashboardCardStyles.paper}>
       <Typography variant="h6" sx={dashboardCardStyles.title}>
@@ -22,14 +28,20 @@ export function MultipleWinnersCard({ data }: Props) {
           </TableRow>
         </TableHead>
 
-        <TableBody>
-          {data.map((item) => (
-            <TableRow key={item.year}>
-              <TableCell>{item.year}</TableCell>
-              <TableCell>{item.winCount}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+        <DashboardTableState colSpan={2} isLoading={isPending} isError={isError} />
+
+        {!isPending && !isError && localYears.length === 0 && <EmptyTableBody colSpan={2} />}
+
+        {!isPending && !isError && localYears.length > 0 && (
+          <TableBody>
+            {localYears.map((item) => (
+              <TableRow key={item.year}>
+                <TableCell>{item.year}</TableCell>
+                <TableCell>{item.winnerCount}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
       </Table>
     </Paper>
   )

@@ -1,6 +1,10 @@
 export type MultipleWinnerYear = {
   year: number
-  winCount: number
+  winnerCount: number
+}
+
+export type YearsWithMultipleWinnersResponse = {
+  years: MultipleWinnerYear[]
 }
 
 export type StudioWinner = {
@@ -8,11 +12,20 @@ export type StudioWinner = {
   winCount: number
 }
 
+export type StudiosWithWinCountResponse = {
+  studios: StudioWinner[]
+}
+
 export type ProducerInterval = {
   producer: string
   interval: number
   previousWin: number
   followingWin: number
+}
+
+export type ProducerIntervalsResponse = {
+  min: ProducerInterval[]
+  max: ProducerInterval[]
 }
 
 export type MovieWinner = {

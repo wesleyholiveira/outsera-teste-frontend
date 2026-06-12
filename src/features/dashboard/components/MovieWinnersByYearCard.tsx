@@ -1,16 +1,11 @@
-import { useMemo, useState } from 'react'
-import { Button, Paper, Stack, TextField, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Alert, Button, Paper, Stack, TextField, Typography } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { DataGrid } from '@mui/x-data-grid'
-import type { GridColDef, GridRowsProp } from '@mui/x-data-grid'
+import type { GridColDef } from '@mui/x-data-grid'
 import type { MovieWinner } from '../types/dashboard'
+import { useWinnersByYear } from '../hooks/useDashboardQueries'
 import { dashboardCardStyles } from './DashboardCard.styles'
-
-const rows: MovieWinner[] = [
-  { id: 1, year: 1980, title: "Can't Stop the Music" },
-  { id: 11, year: 1981, title: 'Mommie Dearest' },
-  { id: 18, year: 1982, title: 'Inchon' },
-]
 
 const columns: GridColDef<MovieWinner>[] = [
   { field: 'id', headerName: 'Id', flex: 0.8, sortable: false },
@@ -21,11 +16,9 @@ const columns: GridColDef<MovieWinner>[] = [
 export function MovieWinnersByYearCard() {
   const [year, setYear] = useState('')
   const [searchedYear, setSearchedYear] = useState('')
+  const { data = [], isLoading, isFetching, isError } = useWinnersByYear(searchedYear)
 
-  const filteredRows: GridRowsProp<MovieWinner> = useMemo(() => {
-    if (!searchedYear) return []
-    return rows.filter((movie) => String(movie.year) === searchedYear)
-  }, [searchedYear])
+  const isPending = isLoading || isFetching
 
   return (
     <Paper sx={dashboardCardStyles.paper}>
@@ -41,21 +34,37 @@ export function MovieWinnersByYearCard() {
           placeholder="Search by year"
           value={year}
           onChange={(event) => setYear(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              setSearchedYear(year)
+            }
+          }}
         />
 
-        <Button variant="contained" onClick={() => setSearchedYear(year)}>
+        <Button
+          variant="contained"
+          onClick={() => setSearchedYear(year)}
+          aria-label="Search winners by year"
+        >
           <SearchIcon />
         </Button>
       </Stack>
 
       <DataGrid
-        rows={filteredRows}
+        rows={searchedYear ? data : []}
         columns={columns}
+        loading={isPending}
         disableColumnMenu
         disableRowSelectionOnClick
         hideFooter
         autoHeight
       />
+
+      {isError && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          Failed to load winners by year.
+        </Alert>
+      )}
     </Paper>
   )
 }

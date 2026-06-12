@@ -1,14 +1,52 @@
 import { Paper, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
 import type { ProducerInterval } from '../types/dashboard'
+import { useMaxMinWinIntervalForProducers } from '../hooks/useDashboardQueries'
 import { dashboardCardStyles } from './DashboardCard.styles'
+import { DashboardTableState, EmptyTableBody } from './DashboardTableState'
 
-type Props = {
-  maximum: ProducerInterval[]
-  minimum: ProducerInterval[]
+type ProducerIntervalsTableProps = {
+  data: ProducerInterval[]
+  isPending: boolean
+  isError: boolean
 }
 
-export function ProducerIntervalsCard({ maximum, minimum }: Props) {
+function ProducerIntervalsTable({ data, isPending, isError }: ProducerIntervalsTableProps) {
+  return (
+    <Table size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell>Producer</TableCell>
+          <TableCell>Interval</TableCell>
+          <TableCell>Previous Year</TableCell>
+          <TableCell>Following Year</TableCell>
+        </TableRow>
+      </TableHead>
+
+      <DashboardTableState colSpan={4} isLoading={isPending} isError={isError} />
+
+      {!isPending && !isError && data.length === 0 && <EmptyTableBody colSpan={4} />}
+
+      {!isPending && !isError && data.length > 0 && (
+        <TableBody>
+          {data.map((item) => (
+            <TableRow key={`${item.producer}-${item.previousWin}-${item.followingWin}`}>
+              <TableCell>{item.producer}</TableCell>
+              <TableCell>{item.interval}</TableCell>
+              <TableCell>{item.previousWin}</TableCell>
+              <TableCell>{item.followingWin}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
+    </Table>
+  )
+}
+
+export function ProducerIntervalsCard() {
+  const { data, isLoading, isFetching, isError } = useMaxMinWinIntervalForProducers()
+  const isPending = isLoading || isFetching
+
   return (
     <Paper sx={dashboardCardStyles.paper}>
       <Typography variant="h6" sx={dashboardCardStyles.title}>
@@ -19,53 +57,13 @@ export function ProducerIntervalsCard({ maximum, minimum }: Props) {
         Maximum
       </Typography>
 
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Producer</TableCell>
-            <TableCell>Interval</TableCell>
-            <TableCell>Previous Year</TableCell>
-            <TableCell>Following Year</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {maximum.map((item) => (
-            <TableRow key={item.producer}>
-              <TableCell>{item.producer}</TableCell>
-              <TableCell>{item.interval}</TableCell>
-              <TableCell>{item.previousWin}</TableCell>
-              <TableCell>{item.followingWin}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ProducerIntervalsTable data={data?.max ?? []} isPending={isPending} isError={isError} />
 
       <Typography variant="h5" sx={{ my: 2 }}>
         Minimum
       </Typography>
 
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Producer</TableCell>
-            <TableCell>Interval</TableCell>
-            <TableCell>Previous Year</TableCell>
-            <TableCell>Following Year</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {minimum.map((item) => (
-            <TableRow key={item.producer}>
-              <TableCell>{item.producer}</TableCell>
-              <TableCell>{item.interval}</TableCell>
-              <TableCell>{item.previousWin}</TableCell>
-              <TableCell>{item.followingWin}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ProducerIntervalsTable data={data?.min ?? []} isPending={isPending} isError={isError} />
     </Paper>
   )
 }
