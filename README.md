@@ -13,6 +13,7 @@ Além da implementação dos requisitos solicitados, algumas decisões arquitetu
 ## React + TypeScript
 
 O React foi utilizado para construção da interface e o TypeScript para fornecer tipagem estática, reduzindo erros em tempo de desenvolvimento e facilitando futuras manutenções e refatorações.
+
 ---
 
 ## Vite
