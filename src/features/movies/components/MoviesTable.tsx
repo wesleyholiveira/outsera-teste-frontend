@@ -9,7 +9,7 @@ import { moviesTableStyles } from './MoviesTable.styles'
 
 const ALL_WINNERS_OPTION = 'all'
 const GRID_PAGE_SIZE = 15
-const SERVER_PAGE_SIZE = 75
+const SERVER_PAGE_SIZE = 15
 const PAGES_PER_SERVER_REQUEST = SERVER_PAGE_SIZE / GRID_PAGE_SIZE
 
 export function MoviesTable() {
@@ -43,16 +43,7 @@ export function MoviesTable() {
     winner: winnerFilter,
   })
 
-  const localRows = useMemo(() => {
-    const rows = data?.content ?? []
-
-    const localPage = paginationModel.page % PAGES_PER_SERVER_REQUEST
-    const start = localPage * GRID_PAGE_SIZE
-    const end = start + GRID_PAGE_SIZE
-
-    return rows.slice(start, end)
-  }, [data?.content, paginationModel.page])
-
+  const rows = data?.content ?? []
   const totalPages = Math.ceil((data?.totalElements ?? 0) / GRID_PAGE_SIZE)
 
   const columns: GridColDef<Movie>[] = [
@@ -75,13 +66,12 @@ export function MoviesTable() {
           </Typography>
 
           <TextField
+            type="number"
             size="small"
             placeholder="Filter by year"
             value={yearInput}
             onChange={(event) => {
               const value = event.target.value
-
-              if (!/^\d*$/.test(value)) return
 
               setYearInput(value)
               debouncedSetYearFilter(value)
@@ -140,7 +130,7 @@ export function MoviesTable() {
         List movies
       </Typography>
       <DataGrid
-        rows={localRows}
+        rows={rows}
         columns={columns}
         loading={isLoading || isFetching}
         hideFooter

@@ -62,7 +62,7 @@ const moviesResponse = {
   ],
   totalElements: 2,
   totalPages: 1,
-  size: 75,
+  size: 15,
   number: 0,
 }
 
@@ -87,7 +87,7 @@ describe('MoviesTable', () => {
 
     expect(mockedGetMovies).toHaveBeenCalledWith({
       page: 0,
-      size: 75,
+      size: 15,
       year: '',
       winner: undefined,
     })
@@ -111,7 +111,7 @@ describe('MoviesTable', () => {
     await vi.waitFor(() => {
       expect(mockedGetMovies).toHaveBeenLastCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '1980',
         winner: undefined,
       })
@@ -127,13 +127,13 @@ describe('MoviesTable', () => {
       target: { value: 'abc' },
     })
 
-    expect(yearInput).toHaveValue('')
+    expect(yearInput).toHaveValue(null)
 
     fireEvent.change(yearInput, {
       target: { value: '1980' },
     })
 
-    expect(yearInput).toHaveValue('1980')
+    expect(yearInput).toHaveValue(1980)
   })
 
   it('filters by winner yes', async () => {
@@ -147,7 +147,7 @@ describe('MoviesTable', () => {
     await waitFor(() => {
       expect(mockedGetMovies).toHaveBeenLastCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '',
         winner: true,
       })
@@ -165,7 +165,7 @@ describe('MoviesTable', () => {
     await waitFor(() => {
       expect(mockedGetMovies).toHaveBeenLastCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '',
         winner: false,
       })
@@ -183,7 +183,7 @@ describe('MoviesTable', () => {
     await waitFor(() => {
       expect(mockedGetMovies).toHaveBeenLastCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '',
         winner: true,
       })
@@ -195,7 +195,7 @@ describe('MoviesTable', () => {
     await waitFor(() => {
       expect(mockedGetMovies).toHaveBeenCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '',
         winner: undefined,
       })
@@ -226,7 +226,7 @@ describe('MoviesTable', () => {
     await vi.waitFor(() => {
       expect(mockedGetMovies).toHaveBeenLastCalledWith({
         page: 0,
-        size: 75,
+        size: 15,
         year: '2099',
         winner: undefined,
       })
