@@ -86,20 +86,6 @@ Essa abordagem permite:
 
 ---
 
-## Otimização da Paginação
-
-Embora a tabela exiba apenas 15 registros por página, a aplicação realiza requisições buscando 75 registros por vez.
-
-```text
-75 registros retornados pela API
-↓
-5 páginas de 15 registros no DataGrid
-```
-
-Essa estratégia reduz chamadas ao backend, melhora a navegação entre páginas e diminui a latência percebida pelo usuário.
-
----
-
 # Testes
 
 O projeto utiliza Vitest e React Testing Library para validação dos principais fluxos da aplicação.
